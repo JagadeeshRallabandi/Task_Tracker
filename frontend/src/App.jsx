@@ -82,7 +82,7 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
+    <div className="min-h-screen bg-gray-100 p-8 text-gray-800"> {/* Added text-gray-800 here */}
       <h1 className="text-3xl font-bold mb-8 text-center text-indigo-700">Task Dependency Tracker</h1>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -91,29 +91,29 @@ function App() {
         <div className="space-y-6">
           
           {/* Create Task Form */}
-          <div className="bg-white p-6 rounded shadow">
-            <h2 className="text-xl font-bold mb-4">Create Task</h2>
+          <div className="bg-white p-6 rounded shadow border border-gray-200">
+            <h2 className="text-xl font-bold mb-4 text-black">Create Task</h2>
             <form onSubmit={createTask} className="flex gap-2">
               <input
                 type="text"
                 placeholder="Task Title"
-                className="border p-2 rounded flex-1"
+                className="border border-gray-300 p-2 rounded flex-1 text-black placeholder-gray-500 bg-white"
                 value={newTask.title}
                 onChange={e => setNewTask({ ...newTask, title: e.target.value })}
                 required
               />
-              <button className="bg-indigo-600 text-white px-4 py-2 rounded">Add</button>
+              <button className="bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700">Add</button>
             </form>
           </div>
 
           {/* Add Dependency Form */}
-          <div className="bg-white p-6 rounded shadow">
-            <h2 className="text-xl font-bold mb-4">Add Dependency</h2>
-            {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-2 text-sm">{error}</div>}
+          <div className="bg-white p-6 rounded shadow border border-gray-200">
+            <h2 className="text-xl font-bold mb-4 text-black">Add Dependency</h2>
+            {error && <div className="bg-red-100 text-red-700 p-2 rounded mb-2 text-sm border border-red-200">{error}</div>}
             <form onSubmit={addDependency} className="flex flex-col gap-2">
-              <div className="flex gap-2">
+              <div className="flex gap-2 items-center">
                 <select 
-                    className="border p-2 rounded flex-1"
+                    className="border border-gray-300 p-2 rounded flex-1 text-black bg-white"
                     value={dependency.taskId}
                     onChange={e => setDependency({...dependency, taskId: e.target.value})}
                     required
@@ -121,9 +121,9 @@ function App() {
                     <option value="">Select Task</option>
                     {tasks.map(t => <option key={t.id} value={t.id}>{t.id}: {t.title}</option>)}
                 </select>
-                <span className="self-center">depends on</span>
+                <span className="self-center font-medium text-gray-600">depends on</span>
                 <select 
-                    className="border p-2 rounded flex-1"
+                    className="border border-gray-300 p-2 rounded flex-1 text-black bg-white"
                     value={dependency.dependsOnId}
                     onChange={e => setDependency({...dependency, dependsOnId: e.target.value})}
                     required
@@ -132,47 +132,53 @@ function App() {
                     {tasks.map(t => <option key={t.id} value={t.id}>{t.id}: {t.title}</option>)}
                 </select>
               </div>
-              <button disabled={loading} className="bg-gray-800 text-white px-4 py-2 rounded mt-2 disabled:opacity-50">
+              <button disabled={loading} className="bg-gray-800 text-white px-4 py-2 rounded mt-2 disabled:opacity-50 hover:bg-gray-900">
                   {loading ? 'Checking Cycles...' : 'Link Dependency'}
               </button>
             </form>
           </div>
 
           {/* Task List */}
-          <div className="bg-white p-6 rounded shadow">
-            <h2 className="text-xl font-bold mb-4">Task List</h2>
-            <ul className="space-y-2">
-              {tasks.map(task => (
-                <li key={task.id} className="border p-3 rounded flex justify-between items-center bg-gray-50">
-                  <div>
-                    <span className="font-bold mr-2">{task.title}</span>
-                    <span className={`text-xs px-2 py-1 rounded text-white
-                        ${task.status === 'completed' ? 'bg-green-500' : 
-                          task.status === 'blocked' ? 'bg-red-500' : 
-                          task.status === 'in_progress' ? 'bg-blue-500' : 'bg-gray-400'}`}>
-                        {task.status}
-                    </span>
-                    <div className="text-xs text-gray-500 mt-1">
-                        Depends on: {task.dependencies.length > 0 ? task.dependencies.join(', ') : 'None'}
-                    </div>
-                  </div>
-                  <div className="flex gap-2">
-                    <select 
-                        className="border rounded text-sm p-1"
-                        value={task.status}
-                        onChange={(e) => updateStatus(task.id, e.target.value)}
-                        disabled={task.status === 'blocked'} // Prevent manual override if blocked logic is strict
-                    >
-                        <option value="pending">Pending</option>
-                        <option value="in_progress">In Progress</option>
-                        <option value="completed">Completed</option>
-                        <option value="blocked">Blocked</option>
-                    </select>
-                    <button onClick={() => deleteTask(task.id)} className="text-red-500 text-sm">Delete</button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+          <div className="bg-white p-6 rounded shadow border border-gray-200">
+            <h2 className="text-xl font-bold mb-4 text-black">Task List</h2>
+            {tasks.length === 0 ? (
+                <p className="text-gray-500 italic">No tasks yet.</p>
+            ) : (
+                <ul className="space-y-2">
+                  {tasks.map(task => (
+                    <li key={task.id} className="border border-gray-200 p-3 rounded flex justify-between items-center bg-gray-50">
+                      <div>
+                        <div className="flex items-center gap-2">
+                            <span className="font-bold text-gray-900">{task.title}</span>
+                            <span className={`text-xs px-2 py-0.5 rounded text-white
+                                ${task.status === 'completed' ? 'bg-green-500' : 
+                                  task.status === 'blocked' ? 'bg-red-500' : 
+                                  task.status === 'in_progress' ? 'bg-blue-500' : 'bg-gray-400'}`}>
+                                {task.status.replace('_', ' ')}
+                            </span>
+                        </div>
+                        <div className="text-xs text-gray-500 mt-1">
+                            ID: {task.id} | Depends on: {task.dependencies.length > 0 ? task.dependencies.join(', ') : 'None'}
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <select 
+                            className="border border-gray-300 rounded text-sm p-1 text-black bg-white"
+                            value={task.status}
+                            onChange={(e) => updateStatus(task.id, e.target.value)}
+                            disabled={task.status === 'blocked'} 
+                        >
+                            <option value="pending">Pending</option>
+                            <option value="in_progress">In Progress</option>
+                            <option value="completed">Completed</option>
+                            <option value="blocked">Blocked</option>
+                        </select>
+                        <button onClick={() => deleteTask(task.id)} className="text-red-600 hover:text-red-800 text-sm font-medium">Delete</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+            )}
           </div>
         </div>
 
@@ -180,9 +186,9 @@ function App() {
         <div className="h-full">
             <div className="sticky top-8">
                 <DependencyGraph tasks={tasks} refreshTrigger={tasks} />
-                <div className="mt-4 bg-white p-4 rounded shadow">
-                    <h3 className="font-bold">Legend</h3>
-                    <div className="flex gap-4 mt-2 text-sm">
+                <div className="mt-4 bg-white p-4 rounded shadow border border-gray-200">
+                    <h3 className="font-bold text-black mb-2">Legend</h3>
+                    <div className="flex gap-4 mt-2 text-sm text-gray-700">
                         <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-gray-400"></div> Pending</span>
                         <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-blue-500"></div> In Progress</span>
                         <span className="flex items-center gap-1"><div className="w-3 h-3 rounded-full bg-green-500"></div> Completed</span>
